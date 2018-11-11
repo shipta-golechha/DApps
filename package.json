@@ -1,0 +1,25 @@
+{
+  "name": "dweet",
+  "version": "1.0.0",
+  "description": "decentralized twitter",
+  "main": "src/app.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shipta-golechha/DApps.git"
+  },
+  "author": "Sounak Pradhan",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/shipta-golechha/DApps/issues"
+  },
+  "homepage": "https://github.com/shipta-golechha/DApps#readme",
+  "dependencies": {
+    "web3": "^1.0.0-beta.36"
+  }
+}
