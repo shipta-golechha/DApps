@@ -36,15 +36,6 @@ contract("Dweet", (accounts) => {
         assert.equal(user[2], description);
     });
 
-    // it("should have created an owner for our defaultAccount", async function() {
-
-    //     // read from the owners mapping the value associated with the defaultAccount
-    //     const usernameHash = await contractInstance.owners.call(web3.eth.defaultAccount);
-
-    //     // check the return value from owners mapping matches
-    //     assert.equal(usernameHash, web3.utils.keccak256(username));
-    // });
-
     it("should know 'testhandle' exists", async function() {
         const usernameHash = web3.utils.keccak256(username);
 
@@ -92,14 +83,15 @@ contract("Dweet", (accounts) => {
 
         // send the tweet
         await contractInstance.tweet(tweetContent, { from: user1 });
-        // subscribe to new tweet events
-
+    
         event = contractInstance.NewTweet({
             filter: {
                 _from: usernameHash
             },
             fromBlock: 1 // must be > 0!
         })
+
+        // subscribe to new tweet events
         event.watch((err, event) => {
             assert.equal(event.returnValues.tweet, tweetContent);
         });
