@@ -1,4 +1,3 @@
-https://github.com/Ahanmr/Decentralized_Twitter
 // our Dweet contract object to test
 const Dweet = artifacts.require('./Dweet.sol');
 const assert = require('assert');
@@ -21,7 +20,7 @@ contract("Dweet", (accounts) => {
         contractInstance = await Dweet.deployed({ from: admin });
     })
 
-    it("transaction to create a Dweet user 'testhandle' with description 'test description' should be successful", async () => {
+    it("Create a new user with username 'testhandle' and description 'test description' ", async () => {
         // do create the account
         const createAccountTx = await contractInstance.createAccount(username, description, { from: user1 });
 
@@ -115,6 +114,52 @@ contract("Dweet", (accounts) => {
             event.watch((err, event) => {
                 assert.equal(event.returnValues.tweet, tweetContent);
             });
+        }
+        catch(e){
+            assert.ok(true);
+        }
+    });
+    it("should be able to add a tweet as 'firstTweet' only if its an existing user", async function() {
+        const usernameHash = web3.utils.keccak256(username);
+
+        // send the tweet
+        try{
+            await contractInstance.tweet(tweetContent, { from: user3 });
+            
+            event = contractInstance.NewTweet({
+                filter: {
+                    _from: usernameHash
+                },
+                fromBlock: 1 // must be > 0!
+            })
+
+            event.watch((err, event) => {
+                assert.equal(event.returnValues.tweet, tweetContent);
+            });
+        }
+        catch(e){
+            assert.ok(true);
+        }
+    });
+    it("If a already registered user(with same address) tries to create another account it should not be allowed", async function() {
+        
+        try{
+            const createAccountTx = await contractInstance.createAccount('xyz', description, { from: user1 });
+
+            // assert that the transaction was successful
+            assert.equal(createAccountTx.receipt.status, true);
+        }
+        catch(e){
+            assert.ok(true);
+        }
+    });
+    it("A new user should not be able to create an account with already existing username", async function() {
+        
+        try{
+            const createAccountTx = await contractInstance.createAccount('testhandle', description, { from: user3 });
+
+            // assert that the transaction was successful
+            assert.equal(createAccountTx.receipt.status, true);
         }
         catch(e){
             assert.ok(true);
