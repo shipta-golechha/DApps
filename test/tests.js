@@ -1,3 +1,4 @@
+https://github.com/Ahanmr/Decentralized_Twitter
 // our Dweet contract object to test
 const Dweet = artifacts.require('./Dweet.sol');
 const assert = require('assert');
@@ -68,7 +69,7 @@ contract("Dweet", (accounts) => {
             // call edit account
             await contractInstance.editAccount(usernameHash, updatedDescription, updatedImageHash, { from: user2 });
         }
-        catch {
+        catch(e) {
 
         }
         
@@ -96,4 +97,28 @@ contract("Dweet", (accounts) => {
             assert.equal(event.returnValues.tweet, tweetContent);
         });
     });
+
+    it("should be able to add a tweet as 'firstTweet' only if its an existing user", async function() {
+        const usernameHash = web3.utils.keccak256(username);
+
+        // send the tweet
+        try{
+            await contractInstance.tweet(tweetContent, { from: user3 });
+            
+            event = contractInstance.NewTweet({
+                filter: {
+                    _from: usernameHash
+                },
+                fromBlock: 1 // must be > 0!
+            })
+
+            event.watch((err, event) => {
+                assert.equal(event.returnValues.tweet, tweetContent);
+            });
+        }
+        catch(e){
+            assert.ok(true);
+        }
+    });
+
 });
