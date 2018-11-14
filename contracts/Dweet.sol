@@ -41,12 +41,13 @@ contract Dweet {
      * NewTweet
      *
      * Event to be emitted once a tweet is stored in the contract
-     * {bytes32} _from - keccak256-hashed username of user who posted the tweet.
+     * {bytes32} from - keccak256-hashed username of user who posted the tweet.
      *                          This field is indexed so it can be filtered.
      * {string} tweet - the tweet contents
      */
     event NewTweet(
-        bytes32 indexed _from,
+        // bytes32 indexed from,
+        bytes32 indexed from,
         string tweet,
         uint time
     );

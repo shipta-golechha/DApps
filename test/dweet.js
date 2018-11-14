@@ -36,16 +36,7 @@ contract("Dweet", (accounts) => {
         assert.equal(user[2], description);
     });
 
-    // it("should have created an owner for our defaultAccount", async function() {
-
-    //     // read from the owners mapping the value associated with the defaultAccount
-    //     const usernameHash = await contractInstance.owners.call(web3.eth.defaultAccount);
-
-    //     // check the return value from owners mapping matches
-    //     assert.equal(usernameHash, web3.utils.keccak256(username));
-    // });
-
-    it("should know 'testhandle' exists", async function() {
+    it("should know 'testhandle' exists", async () => {
         const usernameHash = web3.utils.keccak256(username);
 
         // check the usernamehash exists
@@ -54,7 +45,7 @@ contract("Dweet", (accounts) => {
     });
 
 
-    it("user1 should be able to edit user1's details", async function() {
+    it("user1 should be able to edit user1's details", async () => {
         const usernameHash = web3.utils.keccak256(username);
         const updatedDescription = description + ' edited';
         const updatedImageHash = 'QmWvPtv2xVGgdV12cezG7iCQ4hQ52e4ptmFFnBK3gTjnec';
@@ -68,7 +59,7 @@ contract("Dweet", (accounts) => {
         assert.equal(updatedUserDetails[4], updatedImageHash);
     });
 
-    it("user2 should not be able to edit user1's details", async function() {
+    it("user2 should not be able to edit user1's details", async () => {
         const usernameHash = web3.utils.keccak256(username);
         const updatedDescription = description + ' edited again';
         const updatedImageHash = 'NAV6eB47NyxyMGzy6PnvjWNNCCtpYa2pmy6rKYnqnvyKNH8';
@@ -87,7 +78,7 @@ contract("Dweet", (accounts) => {
         assert.notEqual(updatedUserDetails[4], updatedImageHash);
     });
 
-    it("should be able to add a tweet as 'testhandle' and receive it via contract event", async function() {
+    it("should be able to add a tweet as 'testhandle' and receive it via contract event", async () => {
         const usernameHash = web3.utils.keccak256(username);
 
         // send the tweet
@@ -96,7 +87,7 @@ contract("Dweet", (accounts) => {
 
         event = contractInstance.NewTweet({
             filter: {
-                _from: usernameHash
+                from: usernameHash
             },
             fromBlock: 1 // must be > 0!
         })
