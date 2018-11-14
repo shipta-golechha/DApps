@@ -2,7 +2,7 @@
   "name": "dweet",
   "version": "1.0.0",
   "description": "decentralized twitter",
-  "main": "src/app.js",
+  "main": "",
   "directories": {
     "test": "test"
   },
@@ -21,5 +21,5 @@
   "homepage": "https://github.com/shipta-golechha/DApps#readme",
   "dependencies": {
     "web3": "^1.0.0-beta.36"
-  }
+  } 
 }
