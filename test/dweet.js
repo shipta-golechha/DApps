@@ -20,7 +20,7 @@ contract("Dweet", (accounts) => {
         contractInstance = await Dweet.deployed({ from: admin });
     })
 
-    it("Create a new user with username 'testhandle' and description 'test description' ", async () => {
+    it("should allow to create a new user with username 'testhandle' and description 'test description'", async () => {
         // do create the account
         const createAccountTx = await contractInstance.createAccount(username, description, { from: user1 });
 
@@ -45,7 +45,7 @@ contract("Dweet", (accounts) => {
     });
 
 
-    it("user1 should be able to edit user1's details", async () => {
+    it("should allow user1 to edit user1's details", async () => {
         const usernameHash = web3.utils.keccak256(username);
         const updatedDescription = description + ' edited';
         const updatedImageHash = 'QmWvPtv2xVGgdV12cezG7iCQ4hQ52e4ptmFFnBK3gTjnec';
@@ -59,7 +59,7 @@ contract("Dweet", (accounts) => {
         assert.equal(updatedUserDetails[4], updatedImageHash);
     });
 
-    it("user2 should not be able to edit user1's details", async () => {
+    it("should not allow user2 to edit user1's details", async () => {
         const usernameHash = web3.utils.keccak256(username);
         const updatedDescription = description + ' edited again';
         const updatedImageHash = 'NAV6eB47NyxyMGzy6PnvjWNNCCtpYa2pmy6rKYnqnvyKNH8';
@@ -78,92 +78,40 @@ contract("Dweet", (accounts) => {
         assert.notEqual(updatedUserDetails[4], updatedImageHash);
     });
 
+    it("should not allow a registered user to register again", async () => {
+        try {
+            await contractInstance.createAccount('someUserName', description, { from: user1 });
+        }
+        catch(e) {
+            assert.ok(true);
+        }
+    });
+
+    it("should not allow a new user to create an account with already existing username", async () => {
+        try {
+            await contractInstance.createAccount('testhandle', description, { from: user3 });
+        }
+        catch(e) {
+            assert.ok(true);
+        }
+    });
+
     it("should be able to add a tweet as 'testhandle' and receive it via contract event", async () => {
         const usernameHash = web3.utils.keccak256(username);
 
         // send the tweet
         await contractInstance.tweet(tweetContent, { from: user1 });
-    
+        let flag = false;
+
         event = contractInstance.NewTweet({
             filter: {
-                from: usernameHash
+                from: usernameHash,
             },
             fromBlock: 1 // must be > 0!
-        })
+        });
 
-        // subscribe to new tweet events
         event.watch((err, event) => {
             assert.equal(event.returnValues.tweet, tweetContent);
         });
     });
-
-    it("should be able to add a tweet as 'firstTweet' only if its an existing user", async () => {
-        const usernameHash = web3.utils.keccak256(username);
-
-        // send the tweet
-        try{
-            await contractInstance.tweet(tweetContent, { from: user3 });
-            
-            event = contractInstance.NewTweet({
-                filter: {
-                    _from: usernameHash
-                },
-                fromBlock: 1 // must be > 0!
-            })
-
-            event.watch((err, event) => {
-                assert.equal(event.returnValues.tweet, tweetContent);
-            });
-        }
-        catch(e){
-            assert.ok(true);
-        }
-    });
-    it("should be able to add a tweet as 'firstTweet' only if its an existing user", async () => {
-        const usernameHash = web3.utils.keccak256(username);
-
-        // send the tweet
-        try{
-            await contractInstance.tweet(tweetContent, { from: user3 });
-            
-            event = contractInstance.NewTweet({
-                filter: {
-                    _from: usernameHash
-                },
-                fromBlock: 1 // must be > 0!
-            })
-
-            event.watch((err, event) => {
-                assert.equal(event.returnValues.tweet, tweetContent);
-            });
-        }
-        catch(e){
-            assert.ok(true);
-        }
-    });
-    it("If a already registered user(with same address) tries to create another account it should not be allowed", async () => {
-        
-        try{
-            const createAccountTx = await contractInstance.createAccount('xyz', description, { from: user1 });
-
-            // assert that the transaction was successful
-            assert.equal(createAccountTx.receipt.status, true);
-        }
-        catch(e){
-            assert.ok(true);
-        }
-    });
-    it("A new user should not be able to create an account with already existing username", async () => {
-        
-        try{
-            const createAccountTx = await contractInstance.createAccount('testhandle', description, { from: user3 });
-
-            // assert that the transaction was successful
-            assert.equal(createAccountTx.receipt.status, true);
-        }
-        catch(e){
-            assert.ok(true);
-        }
-    });
-
 });

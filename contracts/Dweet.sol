@@ -46,7 +46,6 @@ contract Dweet {
      * {string} tweet - the tweet contents
      */
     event NewTweet(
-        // bytes32 indexed from,
         bytes32 indexed from,
         string tweet,
         uint time
